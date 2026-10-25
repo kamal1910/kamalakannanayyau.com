@@ -1,0 +1,17 @@
+---
+title: Hello, world
+description: Why I built this site, and how it's put together.
+date: 2026-10-25
+---
+
+Welcome to my corner of the internet. This is where I'll write about what I'm building, what I'm learning, and what I find interesting.
+
+## How this site works
+
+The site is built with **React 19** and **React Router 8** in framework mode:
+
+- Most pages are **pre-rendered at build time**, so they load as plain HTML.
+- The [/now](/now) page is **server-rendered on each request**. Its static shell arrives first and live data streams in afterwards with `<Suspense>`.
+- Posts like this one are written in **MDX** and validated with `zod`.
+
+> TODO: replace this post with your own first entry.
