@@ -1,5 +1,6 @@
 import { data, Link } from "react-router";
 import type { Route } from "./+types/writing-post";
+import { PostTags } from "~/components/post-tags";
 import { getPost } from "~/content/posts";
 import { seo } from "~/lib/seo";
 import { formatDate } from "~/lib/format";
@@ -23,6 +24,22 @@ export function meta({ loaderData }: Route.MetaArgs) {
   });
 }
 
+function DevToLink({ href }: { href: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 px-3.5 py-1.5 text-sm font-medium transition hover:border-stone-900 dark:border-stone-700 dark:hover:border-stone-100"
+    >
+      Read on DEV
+      <span aria-hidden="true" className="text-accent-600">
+        ↗
+      </span>
+    </a>
+  );
+}
+
 export default function WritingPost({ loaderData }: Route.ComponentProps) {
   const Content = getPost(loaderData.slug)?.Content;
 
@@ -42,8 +59,24 @@ export default function WritingPost({ loaderData }: Route.ComponentProps) {
           {loaderData.title}
         </h1>
         <p className="mt-4 text-lg text-stone-600 dark:text-stone-400">{loaderData.description}</p>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+          <PostTags tags={loaderData.tags} />
+          {loaderData.devToUrl && <DevToLink href={loaderData.devToUrl} />}
+        </div>
       </header>
-      <div className="prose-post mt-12">{Content && <Content />}</div>
+      <div className="prose-post mt-12 border-t border-stone-200 pt-12 dark:border-stone-800">
+        {Content && <Content />}
+      </div>
+      {loaderData.devToUrl && (
+        <aside className="mt-16 rounded-2xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900">
+          <p className="text-stone-700 dark:text-stone-300">
+            Have thoughts or questions? Join the discussion in the comments on DEV.
+          </p>
+          <div className="mt-4">
+            <DevToLink href={loaderData.devToUrl} />
+          </div>
+        </aside>
+      )}
     </article>
   );
 }

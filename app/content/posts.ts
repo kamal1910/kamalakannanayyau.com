@@ -18,7 +18,7 @@ export function parsePosts(source: Record<string, MdxModule>): Post[] {
       return { ...result.data, slug, Content: mod.default };
     })
     .filter((post) => !post.draft)
-    .sort((a, b) => b.date.localeCompare(a.date));
+    .sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
 }
 
 export const posts = parsePosts(modules);

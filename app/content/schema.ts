@@ -46,6 +46,9 @@ export const postFrontmatterSchema = z.object({
   // YAML may hand us a Date or a string depending on the parser's schema.
   date: z.union([z.iso.date(), z.date().transform((date) => date.toISOString().slice(0, 10))]),
   draft: z.boolean().default(false),
+  tags: z.array(z.string().min(1)).default([]),
+  // Where the post was also published, e.g. its dev.to URL.
+  devToUrl: z.url().optional(),
 });
 
 export type Profile = z.infer<typeof profileSchema>;

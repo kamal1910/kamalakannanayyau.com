@@ -2,3 +2,4 @@ build
 .react-router
 package-lock.json
 .agents
+app/content/posts

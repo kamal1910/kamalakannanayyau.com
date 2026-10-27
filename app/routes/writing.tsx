@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import type { Route } from "./+types/writing";
 import { PageHeader } from "~/components/page-header";
+import { PostTags } from "~/components/post-tags";
 import { posts } from "~/content/posts";
 import { profile } from "~/content/site";
 import { seo } from "~/lib/seo";
@@ -35,6 +36,9 @@ export default function Writing() {
                   {post.title}
                 </h2>
                 <p className="mt-2 text-stone-600 dark:text-stone-400">{post.description}</p>
+                <div className="mt-4">
+                  <PostTags tags={post.tags} />
+                </div>
               </Link>
             </li>
           ))}

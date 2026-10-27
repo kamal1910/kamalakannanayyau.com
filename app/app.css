@@ -63,4 +63,29 @@ body {
   & pre code {
     @apply bg-transparent p-0;
   }
+  & strong {
+    @apply font-semibold text-stone-900 dark:text-stone-50;
+  }
+  & hr {
+    @apply my-10 border-stone-200 dark:border-stone-800;
+  }
+  /* Wide tables scroll sideways on phones instead of stretching the page. */
+  & table {
+    @apply block w-full overflow-x-auto border-collapse text-[0.9375rem];
+  }
+  & th {
+    @apply border-b border-stone-300 px-3 py-2 text-left font-semibold whitespace-nowrap text-stone-900 dark:border-stone-700 dark:text-stone-50;
+  }
+  & td {
+    @apply border-b border-stone-200 px-3 py-2 align-top dark:border-stone-800;
+  }
+  & details {
+    @apply rounded-lg border border-stone-200 px-4 py-3 dark:border-stone-800;
+  }
+  & summary {
+    @apply cursor-pointer font-medium text-accent-700 dark:text-accent-400;
+  }
+  & details[open] > summary {
+    @apply mb-4;
+  }
 }

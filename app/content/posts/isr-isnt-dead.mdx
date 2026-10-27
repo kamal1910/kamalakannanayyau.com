@@ -1,0 +1,237 @@
+---
+title: "ISR Isn't Dead, It Just Moved Into The Components"
+description: "ISR and PPR stopped being route-level switches and became two halves of one model that lives inside our components. Here's that model, plus the architecture I'd ship for an enterprise site today."
+date: "2026-10-26"
+tags: ["nextjs", "performance", "react", "seo"]
+devToUrl: "https://dev.to/kamal1910/isr-isnt-dead-it-just-moved-into-the-components-2elf"
+---
+
+## The question I keep getting
+
+Lately I keep hearing some version of this from friends, colleagues, and teams at my current organization: "We're rebuilding our customer-facing site. It needs to be fast, it needs SEO, and someone said ISR and PPR. What's the actual architecture in 2026?"
+
+For years the honest answer was "it depends, pick a rendering mode per page and pray." A product page was either static (fast, but stale prices) or server-rendered (fresh, but we pay for it on every request). we picked one and lived with the tradeoffs.
+
+That choice mostly went away this year. ISR and PPR didn't die. They just stopped being route-level switches and became two halves of one model that lives inside our components. This post is my attempt to explain that model the way I wish someone had explained it to me, plus the architecture I'd actually ship for an enterprise site today.
+
+## What actually changed
+
+Quick timeline, because the naming churn is half the confusion:
+
+- **Next.js 16 (Oct 2025)** shipped Cache Components. The `"use cache"` directive, `cacheLife()` and `cacheTag()` became the way to cache things, and the old `experimental.ppr` flag was removed. PPR didn't go away, it got folded in.
+- **Next.js 16.3 (Aug 2026)** added Instant Navigations: Partial Prefetching and App Shells, so client-side navigation feels like an SPA while the server still does the rendering.
+- **Next.js 16.4 (Oct 2026)** is the one that made me write this. The team now recommends Cache Components for every app, and `create-next-app` turns it on by default.
+
+The philosophy shift matters more than any single API. Caching is opt-in now. Everything runs at request time unless we explicitly say "cache this." If we lived through the Next 13/14 era of "why is this page stale and where is that cache even coming from," we will appreciate how much calmer this is.
+
+## PPR and ISR are two halves of one idea
+
+Here's the mental model that finally made it click for me:
+
+- **PPR answers "where does this render?"** Our page becomes a prerendered static shell with dynamic holes punched in it. Anything wrapped in `<Suspense>` that reads request data (cookies, headers, live prices) is a hole.
+- **ISR answers "how long is this fresh?"** Except now we set it per component or per data function with `cacheLife()`, and we refresh it on demand with `cacheTag()` + `revalidateTag()`.
+
+Picture a product page:
+
+```text
++--------------------------- /p/[slug] ---------------------------+
+|                                                                 |
+|  STATIC SHELL (cached, indexed)    DYNAMIC HOLES (per request)  |
+|  +---------------------------+     +-------------------------+  |
+|  | Header + nav              |     | Price + stock           |  |
+|  | cacheLife('days')         |     | <Suspense>              |  |
+|  +---------------------------+     +-------------------------+  |
+|  | Title, copy, images,      |     | Recommendations         |  |
+|  | JSON-LD                   |     | reads cookies()         |  |
+|  | cacheTag('product:123')   |     +-------------------------+  |
+|  +---------------------------+     | Cart badge              |  |
+|  | Reviews summary           |     | per user                |  |
+|  | cacheLife('hours')        |     +-------------------------+  |
+|  +---------------------------+                                  |
++-----------------------------------------------------------------+
+```
+
+The left column ships instantly from the CDN and is what Googlebot reads. The right column streams in a few hundred milliseconds later. Nobody had to choose "static or dynamic" for the whole URL.
+
+If we are mapping old habits to new APIs:
+
+| we used to write | Now we write |
+| --- | --- |
+| `export const revalidate = 3600` | `"use cache"` + `cacheLife('hours')` on the function |
+| `revalidateTag('x')` from a webhook | `cacheTag('x')` on the data, then `revalidateTag('x', 'max')` |
+| Read-our-own-writes after a form post | `updateTag()` inside a Server Action |
+| `experimental.ppr` | Gone. It's automatic with `cacheComponents: true` |
+| `generateStaticParams` | Still here. Prebuild shells for our top URLs, the rest build on first hit |
+
+## The architecture i had ship
+
+Boring layers, each with one job:
+
+```text
+              Users + crawlers
+                     |
+        +------------+-------------+
+        |  CDN edge cache          |---->  proxy.ts
+        |  static shells, assets   |       (A/B, geo, i18n)
+        +------------+-------------+
+                     |
+   +-----------------+------------------------------+
+   |  Next.js 16.4 app (Node runtime, App Router)   |
+   |                                                |
+   |  [Static shell]  [Dynamic holes]  [SEO layer]  |
+   |   use cache       <Suspense>       metadata,   |
+   |   cacheTag        price, stock     JSON-LD     |
+   +--------+------------------------------+--------+
+            |                              |
+   +--------+---------+         +----------+---------+
+   | Shared cache     |         | Data / BFF layer   |
+   | Redis / Valkey   |         | typed + tagged     |
+   +------------------+         +----------+---------+
+                                           |
+           +-----------+-----------+-------+-------+
+           |           |           |               |
+       Headless    Commerce      Search      Auth / profile
+         CMS        / PIM
+```
+
+A few opinions baked into that picture:
+
+- **Node runtime, not edge.** The 16.3 release started deprecating the Edge Runtime. I'd keep personalization logic in `proxy.ts` light and do real work in Node.
+- **Tags live in the data layer, not the page.** If `getProduct()` carries `cacheTag('product:123')`, then one CMS update refreshes the PDP, every category grid showing it, and the landing page that features it. We don't hunt down paths.
+- **A shared cache handler if we self-host.** Run three pods without one and we have three separate ISR caches that disagree with each other. Ask me how I know. (Actually, don't.)
+- **Tiny client components.** `"use client"` goes on the cart drawer and the filter panel, not on the layout. The React Compiler is stable now, so stop hand-writing `useMemo`.
+
+## Show me the code
+
+Turn it on first. On a fresh 16.4 app it's already there:
+
+```ts
+// next.config.ts
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+}
+
+export default nextConfig
+```
+
+The data layer is where caching actually happens:
+
+```ts
+// lib/products.ts
+import { cacheLife, cacheTag } from 'next/cache'
+
+export async function getProduct(slug: string) {
+  'use cache'
+  cacheLife('hours')            // the "ISR" part
+  cacheTag(`product:${slug}`)   // so we can invalidate it later
+
+  const res = await fetch(`${process.env.API_URL}/products/${slug}`)
+  return res.json()
+}
+```
+
+The page composes cached and dynamic pieces. Notice there's no `revalidate` export and no `dynamic = 'force-dynamic'` anywhere:
+
+```tsx
+// app/p/[slug]/page.tsx
+import { Suspense } from 'react'
+import { getProduct } from '@/lib/products'
+import { ProductInfo } from './product-info'
+import { LivePrice, PriceSkeleton } from './live-price'
+
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const product = await getProduct(slug)
+
+  return (
+    <>
+      {/* static shell: crawlable, cached */}
+      <ProductInfo product={product} />
+
+      {/* dynamic hole: fresh on every request */}
+      <Suspense fallback={<PriceSkeleton />}>
+        <LivePrice slug={slug} />
+      </Suspense>
+    </>
+  )
+}
+```
+
+And the webhook our CMS calls when an editor hits publish:
+
+```ts
+// app/api/revalidate/route.ts
+import { revalidateTag } from 'next/cache'
+
+export async function POST(req: Request) {
+  // verify the CMS signature here. Seriously, don't skip this.
+  const { slug, categories = [] } = await req.json()
+
+  revalidateTag(`product:${slug}`, 'max')
+  for (const c of categories) revalidateTag(`category:${c}`, 'max')
+
+  return Response.json({ ok: true })
+}
+```
+
+That `'max'` profile means stale-while-revalidate: nobody waits on a rebuild. The next visitor gets the old version once while the new one renders in the background.
+
+## What happens when an editor hits publish
+
+This is the part people get wrong in production, so here's the whole loop:
+
+```text
+1. Editor publishes product         (CMS)
+           |
+2. POST /api/revalidate             (verify signature, map to tags)
+           |
+3. revalidateTag('product:123', 'max')
+   -> entries marked stale in the SHARED cache
+           |
+4. Next request arrives
+   -> old shell served instantly, new one renders in background
+           |
+5. Fresh shell cached
+   -> CDN purged by tag, or its short TTL expires
+```
+
+
+## Gotchas worth knowing before we ship
+
+**The build will yell at us, and that's a feature.** Read `cookies()`, `headers()`, `searchParams` or an un-cached fetch outside a `<Suspense>` boundary and the build fails. It feels annoying for about a day. Then we realize it's forcing us to decide, file by file, what belongs in the shell.
+
+**Don't hide SEO content in a hole.** Anything inside Suspense streams in after the shell. Titles, body copy, internal links and JSON-LD belong in the cached part. Price inside Product schema is the classic trap: either cache price with a short `cacheLife` so it lands in the shell, or accept that the schema price is the cached one.
+
+**Fan out our tags.** A product edit should invalidate `product:123`, its `category:*` tags and any `collection:*` it belongs to. Put that mapping in one function next to our data layer, not scattered across webhooks.
+
+**Webhooks get lost.** Return a non-2xx when invalidation fails so the CMS retries, and set a sane `cacheLife` on everything anyway. Worst case, content goes stale for hours, not forever.
+
+**Stay patched.** Next.js has had several security releases this fall, including fixes for cache poisoning in SSG and ISR. If we are running a cache that serves thousands of users from one render, that's not a release we skip.
+
+**Pages Router still works.** `getStaticProps` with `revalidate` isn't going anywhere today. We can migrate one route at a time.
+
+## When I wouldn't reach for Next.js
+
+- **Mostly content, barely interactive** (docs, publishing, marketing): Astro. Zero JS by default is hard to beat.
+- **React team that finds RSC more trouble than it's worth:** React Router v7, the framework formerly known as Remix. Loaders and actions map cleanly to HTTP.
+- **Vue shop:** Nuxt 4. Same ideas, different ecosystem.
+
+But for a big customer-facing site where SEO pays the bills and personalization pays the rest, Next.js 16 with Cache Components is the most complete answer I have seen. The best part is that the model finally matches how pages actually work: mostly the same for everyone, with a few bits that are about *us*.
+
+If we are migrated a real app to Cache Components, I'd love to hear what bit you. Drop it in the comments.
+
+---
+
+**Further reading**
+
+- [Next.js 16 release post](https://nextjs.org/blog/next-16)
+- [Next.js 16.3: Instant Navigations](https://nextjs.org/blog/next-16-3)
+- [Next.js 16.4 release post](https://nextjs.org/blog/next-16-4)
+- [Next.js blog (security releases)](https://nextjs.org/blog)
+- [Next.js alternatives in 2026 (OpenReplay)](https://blog.openreplay.com/pt/alternativas-next-js/)

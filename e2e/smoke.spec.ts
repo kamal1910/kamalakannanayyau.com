@@ -7,7 +7,12 @@ const pages = [
   { path: "/interests", heading: "Things I keep coming back to" },
   { path: "/projects", heading: "Things I've built" },
   { path: "/writing", heading: "Notes & articles" },
-  { path: "/writing/hello-world", heading: "Hello, world" },
+  {
+    path: "/writing/securing-agent-to-agent-delegation-in-dotnet",
+    heading: "Securing Agent-to-Agent Delegation in .NET",
+  },
+  { path: "/writing/isr-isnt-dead", heading: "ISR Isn't Dead" },
+  { path: "/writing/ai-certifications-2026", heading: "AI Certifications in 2026" },
   { path: "/contact", heading: "Let's talk" },
 ];
 
@@ -29,6 +34,29 @@ test("avatar loads on the home page", async ({ page }) => {
   const avatar = page.getByRole("img", { name: /^Portrait of/ });
   await expect(avatar).toBeVisible();
   expect(await avatar.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+});
+
+test("writing lists posts newest first and links to DEV", async ({ page }) => {
+  await page.goto("/writing");
+  const titles = await page.getByRole("heading", { level: 2 }).allTextContents();
+  expect(titles).toEqual([
+    "AI Certifications in 2026: Which Ones Are Worth It",
+    "ISR Isn't Dead, It Just Moved Into The Components",
+    "Securing Agent-to-Agent Delegation in .NET: A Practical Design",
+  ]);
+
+  await page.goto("/writing/isr-isnt-dead");
+  await expect(page.getByRole("link", { name: /Read on DEV/ }).first()).toHaveAttribute(
+    "href",
+    /^https:\/\/dev\.to\/kamal1910\//,
+  );
+});
+
+test("collapsed code sections expand", async ({ page }) => {
+  await page.goto("/writing/securing-agent-to-agent-delegation-in-dotnet");
+  const summary = page.getByText("Show the Crypto helper class");
+  await summary.click();
+  await expect(page.getByText("public static class Crypto")).toBeVisible();
 });
 
 test("unknown paths return 404", async ({ page }) => {
