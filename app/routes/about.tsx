@@ -1,4 +1,5 @@
 import type { Route } from "./+types/about";
+import { Avatar } from "~/components/avatar";
 import { PageHeader, SectionTitle } from "~/components/page-header";
 import { profile } from "~/content/site";
 import { seo } from "~/lib/seo";
@@ -24,6 +25,7 @@ export default function About() {
         </section>
 
         <aside className="space-y-8">
+          <Avatar size="lg" className="size-40 ring-4 ring-accent-500/40" />
           <SectionTitle>Toolbox</SectionTitle>
           {profile.skills.map((skill) => (
             <div key={skill.group}>

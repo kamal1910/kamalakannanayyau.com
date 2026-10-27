@@ -29,6 +29,22 @@ describe("seo", () => {
   });
 
   it("describes the site owner as a schema.org Person", () => {
-    expect(personJsonLd()).toMatchObject({ "@type": "Person", name: profile.name });
+    expect(personJsonLd()).toMatchObject({
+      "@type": "Person",
+      name: profile.name,
+      image: "https://kamalakannanayyau.com/avatar.jpg",
+    });
+  });
+
+  it("uses the avatar as an absolute share image", () => {
+    const tags = seo({ path: "/" });
+    expect(tags).toContainEqual({
+      property: "og:image",
+      content: "https://kamalakannanayyau.com/avatar.jpg",
+    });
+    expect(tags).toContainEqual({
+      name: "twitter:image",
+      content: "https://kamalakannanayyau.com/avatar.jpg",
+    });
   });
 });

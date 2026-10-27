@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import type { Route } from "./+types/home";
+import { Avatar } from "~/components/avatar";
 import { SectionTitle } from "~/components/page-header";
 import { ProjectCard } from "~/components/project-card";
 import { posts } from "~/content/posts";
@@ -18,35 +19,42 @@ export default function Home() {
 
   return (
     <div className="space-y-28">
-      <section className="max-w-3xl">
-        <p className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1 text-sm text-stone-600 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400">
-          <span className="size-2 rounded-full bg-accent-500" aria-hidden="true" />
-          {profile.role} · {profile.location}
-        </p>
-        <h1 className="mt-6 font-serif text-6xl leading-[1.05] tracking-tight text-stone-900 sm:text-7xl dark:text-stone-50">
-          Hi, I'm {profile.shortName}.
-          <br />
-          <span className="italic text-accent-700 dark:text-accent-400">{profile.tagline}</span>
-        </h1>
-        <p className="mt-8 max-w-2xl text-lg leading-relaxed text-stone-600 dark:text-stone-400">
-          {profile.intro}
-        </p>
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Link
-            to="/about"
-            prefetch="intent"
-            className="rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-stone-50 transition hover:bg-stone-700 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-300"
-          >
-            More about me
-          </Link>
-          <Link
-            to="/contact"
-            prefetch="intent"
-            className="rounded-full border border-stone-300 px-5 py-2.5 text-sm font-medium transition hover:border-stone-900 dark:border-stone-700 dark:hover:border-stone-100"
-          >
-            Get in touch
-          </Link>
+      <section className="flex flex-col-reverse gap-10 md:flex-row md:items-center md:justify-between">
+        <div className="max-w-3xl">
+          <p className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1 text-sm text-stone-600 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400">
+            <span className="size-2 rounded-full bg-accent-500" aria-hidden="true" />
+            {profile.role} · {profile.location}
+          </p>
+          <h1 className="mt-6 font-serif text-6xl leading-[1.05] tracking-tight text-stone-900 sm:text-7xl dark:text-stone-50">
+            Hi, I'm {profile.shortName}.
+            <br />
+            <span className="italic text-accent-700 dark:text-accent-400">{profile.tagline}</span>
+          </h1>
+          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-stone-600 dark:text-stone-400">
+            {profile.intro}
+          </p>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link
+              to="/about"
+              prefetch="intent"
+              className="rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-stone-50 transition hover:bg-stone-700 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-300"
+            >
+              More about me
+            </Link>
+            <Link
+              to="/contact"
+              prefetch="intent"
+              className="rounded-full border border-stone-300 px-5 py-2.5 text-sm font-medium transition hover:border-stone-900 dark:border-stone-700 dark:hover:border-stone-100"
+            >
+              Get in touch
+            </Link>
+          </div>
         </div>
+        <Avatar
+          size="lg"
+          priority
+          className="size-36 shrink-0 shadow-xl shadow-stone-900/10 ring-4 ring-accent-500/40 sm:size-44 md:size-64 lg:size-72"
+        />
       </section>
 
       <section className="grid gap-10 md:grid-cols-2">

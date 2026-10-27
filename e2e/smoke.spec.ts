@@ -24,6 +24,13 @@ for (const { path, heading } of pages) {
   });
 }
 
+test("avatar loads on the home page", async ({ page }) => {
+  await page.goto("/");
+  const avatar = page.getByRole("img", { name: /^Portrait of/ });
+  await expect(avatar).toBeVisible();
+  expect(await avatar.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+});
+
 test("unknown paths return 404", async ({ page }) => {
   const response = await page.goto("/definitely-not-a-page");
   expect(response?.status()).toBe(404);

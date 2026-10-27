@@ -12,6 +12,9 @@ export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString();
 }
 
+/** Square avatar used for link previews; the "summary" card shows it as a square thumbnail. */
+const SHARE_IMAGE = { url: absoluteUrl("/avatar.jpg"), size: 1254 };
+
 /** Title, description, canonical URL and Open Graph / Twitter tags for a page. */
 export function seo({
   title,
@@ -31,9 +34,14 @@ export function seo({
     { property: "og:title", content: fullTitle },
     { property: "og:description", content: description },
     { property: "og:url", content: url },
+    { property: "og:image", content: SHARE_IMAGE.url },
+    { property: "og:image:width", content: String(SHARE_IMAGE.size) },
+    { property: "og:image:height", content: String(SHARE_IMAGE.size) },
+    { property: "og:image:alt", content: `Portrait of ${profile.name}` },
     { name: "twitter:card", content: "summary" },
     { name: "twitter:title", content: fullTitle },
     { name: "twitter:description", content: description },
+    { name: "twitter:image", content: SHARE_IMAGE.url },
   ];
 }
 
@@ -44,6 +52,7 @@ export function personJsonLd() {
     "@type": "Person",
     name: profile.name,
     url: SITE_URL,
+    image: SHARE_IMAGE.url,
     jobTitle: profile.role,
     email: `mailto:${profile.email}`,
     sameAs: profile.socials.map((social) => social.href),

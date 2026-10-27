@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router";
 import { profile } from "~/content/site";
+import { Avatar } from "./avatar";
 import { ThemeToggle } from "./theme-toggle";
 
 export const NAV_ITEMS = [
@@ -28,9 +29,12 @@ export function SiteHeader() {
     <header className="sticky top-0 z-20 border-b border-stone-200/70 bg-stone-50/80 backdrop-blur dark:border-stone-800/70 dark:bg-stone-950/80">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-          <span className="grid size-8 place-items-center rounded-full bg-accent-600 font-serif text-lg text-white">
-            {profile.shortName.charAt(0)}
-          </span>
+          <Avatar
+            size="sm"
+            decorative
+            priority
+            className="size-8 ring-1 ring-stone-200 dark:ring-stone-700"
+          />
           <span className="font-medium tracking-tight">{profile.name}</span>
         </Link>
 
