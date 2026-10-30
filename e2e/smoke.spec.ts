@@ -5,7 +5,7 @@ const pages = [
   { path: "/about", heading: /I'm / },
   { path: "/now", heading: "What I'm focused on" },
   { path: "/interests", heading: "Things I keep coming back to" },
-  { path: "/projects", heading: "Things I've built" },
+  { path: "/projects", heading: "Things I'm building" },
   { path: "/writing", heading: "Notes & articles" },
   {
     path: "/writing/securing-agent-to-agent-delegation-in-dotnet",
@@ -89,7 +89,7 @@ test("navigation works client-side", async ({ page }) => {
     .getByRole("link", { name: "Projects" })
     .click();
   await expect(page).toHaveURL(/\/projects$/);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Things I've built");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Things I'm building");
 });
 
 test("sitemap and robots are served", async ({ request }) => {

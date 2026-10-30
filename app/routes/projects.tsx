@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import type { Route } from "./+types/projects";
 import { PageHeader } from "~/components/page-header";
 import { ProjectCard } from "~/components/project-card";
@@ -15,18 +16,14 @@ export function meta({}: Route.MetaArgs) {
 export default function Projects() {
   return (
     <div className="space-y-14">
-      <PageHeader eyebrow="Projects" title="Things I've built">
+      <PageHeader eyebrow="Projects" title="Things I'm building">
         <p>
-          Ideas I'm exploring and building, mostly where AI agents, automation and search meet real
-          business problems. Most are private while they take shape; more on{" "}
-          <a
-            href={`https://github.com/${profile.githubUsername}`}
-            target="_blank"
-            rel="noreferrer"
-            className="underline underline-offset-4"
-          >
-            GitHub
-          </a>
+          A selection of ideas I'm currently exploring, where AI agents, intelligent automation and
+          search meet real business problems. Several are still taking shape, and I'm always happy
+          to walk through any of them —{" "}
+          <Link to="/contact" prefetch="intent" className="underline underline-offset-4">
+            just get in touch
+          </Link>
           .
         </p>
       </PageHeader>
