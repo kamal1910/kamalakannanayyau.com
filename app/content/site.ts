@@ -126,6 +126,11 @@ export const values = valuesSchema.parse({
       description:
         "Believe true success is about family, health, happiness, and meaningful experiences — not just career achievements.",
     },
+    {
+      title: "Hospitality & Kindness",
+      description:
+        "Love welcoming friends and family into my home, sharing good food, making them feel comfortable, and treating everyone with warmth and respect.",
+    },
   ],
 });
 
