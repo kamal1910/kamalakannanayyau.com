@@ -1,7 +1,7 @@
 import type { Route } from "./+types/interests";
 import { PageHeader, SectionTitle } from "~/components/page-header";
 import type { Interest } from "~/content/schema";
-import { interests, profile } from "~/content/site";
+import { interests, profile, values } from "~/content/site";
 import { seo } from "~/lib/seo";
 
 export function meta({}: Route.MetaArgs) {
@@ -51,6 +51,27 @@ export default function Interests() {
           </ul>
         </section>
       ))}
+
+      <section
+        aria-labelledby="values-title"
+        className="rounded-3xl border border-accent-500/30 bg-accent-50 p-8 sm:p-10 dark:border-accent-400/20 dark:bg-accent-400/5"
+      >
+        <h2
+          id="values-title"
+          className="font-serif text-4xl tracking-tight text-stone-900 dark:text-stone-50"
+        >
+          {values.title}
+        </h2>
+        <p className="mt-3 max-w-2xl text-lg text-stone-700 dark:text-stone-300">{values.intro}</p>
+        <ul className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+          {values.items.map((item) => (
+            <li key={item.title} className="border-l-2 border-accent-500 pl-4">
+              <h3 className="font-semibold text-stone-900 dark:text-stone-50">{item.title}</h3>
+              <p className="mt-1 text-stone-600 dark:text-stone-400">{item.description}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }

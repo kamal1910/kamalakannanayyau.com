@@ -6,7 +6,7 @@
  * (bad URL, missing field) fails the build instead of shipping.
  */
 import { z } from "zod";
-import { interestSchema, nowSchema, profileSchema, projectSchema } from "./schema";
+import { interestSchema, nowSchema, profileSchema, projectSchema, valuesSchema } from "./schema";
 
 export const SITE_URL = "https://kamalakannanayyau.com";
 
@@ -98,6 +98,36 @@ export const profile = profileSchema.parse({
     { label: "LinkedIn", href: "https://www.linkedin.com/in/kamalakannan-ayyau-a5689736/" },
     { label: "GitHub", href: "https://github.com/kamal1910" },
     { label: "DEV", href: "https://dev.to/kamal1910" },
+  ],
+});
+
+export const values = valuesSchema.parse({
+  title: "The Person Behind the Code",
+  intro:
+    "I believe in continuous learning, personal growth, family, and making a positive difference in the lives of others.",
+  items: [
+    {
+      title: "Family First",
+      description: "Cherish spending quality time with my wife, son, and daughter.",
+    },
+    {
+      title: "Keep Growing",
+      description: "Always curious, learning new things, and becoming a better version of myself.",
+    },
+    {
+      title: "Help Others",
+      description: "Enjoy sharing knowledge, mentoring, and supporting others.",
+    },
+    {
+      title: "Think Ahead",
+      description:
+        "Focused on building meaningful things, creating opportunities, and securing a better future for the next generation.",
+    },
+    {
+      title: "Life Balance",
+      description:
+        "Believe true success is about family, health, happiness, and meaningful experiences — not just career achievements.",
+    },
   ],
 });
 

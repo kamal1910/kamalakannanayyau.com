@@ -30,6 +30,12 @@ export const interestSchema = z.object({
   kind: z.enum(["tech", "personal"]),
 });
 
+export const valuesSchema = z.object({
+  title: z.string().min(1),
+  intro: z.string().min(1),
+  items: z.array(z.object({ title: z.string().min(1), description: z.string().min(1) })).min(1),
+});
+
 export const nowSchema = z.object({
   updated: z.iso.date(),
   sections: z.array(z.object({ title: z.string().min(1), items: z.array(z.string()).min(1) })),
