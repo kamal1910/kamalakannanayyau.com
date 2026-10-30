@@ -101,7 +101,6 @@ export const profile = profileSchema.parse({
   ],
 });
 
-// TODO: add your personal interests below the tech ones
 export const interests = z.array(interestSchema).parse([
   {
     title: "Agentic AI",
@@ -131,15 +130,52 @@ export const interests = z.array(interestSchema).parse([
     kind: "tech",
   },
   {
+    title: "Music",
+    emoji: "🎵",
+    description:
+      "A big fan of Ilaiyaraaja's timeless music. I enjoy listening to Tamil melodies, old classics, and discovering music that brings back memories.",
+    kind: "personal",
+  },
+  {
+    title: "Cooking",
+    emoji: "🍳",
+    description:
+      "Enjoy experimenting with cooking, especially Indian vegetarian and non-vegetarian dishes. Love exploring traditional recipes, trying new flavors, and discovering regional cuisines from different parts of India.",
+    kind: "personal",
+  },
+  {
+    title: "Current Affairs & Stock Market",
+    emoji: "📰",
+    description:
+      "Enjoy keeping up with the latest news, global developments, business trends, and technology updates. Interested in following stock market movements, exploring investment opportunities, and understanding the factors shaping the global economy.",
+    kind: "personal",
+  },
+  {
     title: "Reading",
     emoji: "📚",
-    description: "TODO: the kinds of books you enjoy.",
+    description:
+      "Interested in books about technology, artificial intelligence, leadership, entrepreneurship, personal growth, and occasionally fiction.",
     kind: "personal",
   },
   {
     title: "Travel",
-    emoji: "🌏",
-    description: "TODO: places you've been or want to go.",
+    emoji: "✈️",
+    description:
+      "Love exploring new places, experiencing different cultures, discovering local food, and spending quality time with family.",
+    kind: "personal",
+  },
+  {
+    title: "Exploring Technology",
+    emoji: "🤖",
+    description:
+      "Beyond my professional work, I'm curious about emerging technologies, agentic AI, quantum computing, automation, and how innovation can shape the future.",
+    kind: "personal",
+  },
+  {
+    title: "Movies & Cinema",
+    emoji: "🎬",
+    description:
+      "A big fan of story-driven cinema and feel-good comedy movies. Enjoy watching quality films across Tamil, Malayalam, and English cinema, especially movies with compelling storytelling, meaningful characters, and good humor.",
     kind: "personal",
   },
 ]);
