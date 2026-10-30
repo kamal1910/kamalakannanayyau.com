@@ -17,7 +17,6 @@ export const profileSchema = z.object({
   bio: z.array(z.string().min(1)).min(1),
   strengths: z.array(z.object({ title: z.string().min(1), description: z.string().min(1) })),
   email: z.email(),
-  githubUsername: z.string(),
   skills: z.array(z.object({ group: z.string().min(1), items: z.array(z.string()).min(1) })),
   education: z.array(z.object({ degree: z.string().min(1), school: z.string().min(1) })),
   socials: z.array(linkSchema),
@@ -38,7 +37,15 @@ export const valuesSchema = z.object({
 
 export const nowSchema = z.object({
   updated: z.iso.date(),
-  sections: z.array(z.object({ title: z.string().min(1), items: z.array(z.string()).min(1) })),
+  // One or two sentences shown prominently at the top of /now.
+  focus: z.string().min(1),
+  sections: z.array(
+    z.object({
+      title: z.string().min(1),
+      emoji: z.string().min(1),
+      items: z.array(z.string()).min(1),
+    }),
+  ),
 });
 
 export const projectSchema = z.object({

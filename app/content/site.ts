@@ -53,8 +53,6 @@ export const profile = profileSchema.parse({
   ],
   // TODO: the address you want public (avoid your personal inbox)
   email: "hello@kamalakannanayyau.com",
-  // Powers the live activity feed on /now.
-  githubUsername: "kamal1910",
   skills: [
     {
       group: "AI & Intelligent Automation",
@@ -210,25 +208,35 @@ export const interests = z.array(interestSchema).parse([
   },
 ]);
 
-// TODO: update this whenever your focus changes
+// Update this whenever your focus changes, and bump `updated`.
+// The /now page also pulls in active projects and your latest writing automatically.
 export const now = nowSchema.parse({
-  updated: "2026-10-29",
+  updated: "2026-10-30",
+  focus:
+    "Most of my energy right now goes into agentic AI and intelligent automation: moving beyond chatbots to autonomous agents that handle real enterprise work, safely.",
   sections: [
     {
       title: "Building",
+      emoji: "🛠️",
       items: [
         "Agentic workflows: autonomous AI agents and LAMs for complex enterprise tasks.",
         "An open-source C# library for secure agent-to-agent delegation.",
-        "This website — React 19.3 + React Router 8 with pre-rendering and streamed SSR.",
       ],
     },
     {
-      title: "Learning",
-      items: ["TODO: a technology or topic you're digging into."],
+      title: "Exploring",
+      emoji: "🔭",
+      items: [
+        "Zero-trust governance for multi-agent systems: scoped, signed delegation between agents.",
+        "Quantum machine learning: hybrid quantum-classical models with PennyLane and Qiskit.",
+      ],
     },
     {
-      title: "Life",
-      items: ["TODO: something personal you're up to."],
+      title: "Writing",
+      emoji: "✍️",
+      items: [
+        "Articles on agent security, rendering architecture and AI careers, plus shorter posts on LinkedIn.",
+      ],
     },
   ],
 });
@@ -269,8 +277,7 @@ export const projects = z.array(projectSchema).parse([
   {
     name: "kamalakannanayyau.com",
     status: "Live",
-    description:
-      "This site. Pre-rendered pages, a streamed SSR /now page, MDX writing, all type-safe.",
+    description: "This site. Pre-rendered React Router 8 pages, MDX writing and type-safe content.",
     tags: ["React", "React Router", "TypeScript", "Tailwind"],
     repo: "https://github.com/kamal1910/kamalakannanayyau.com",
   },

@@ -75,9 +75,12 @@ test("unknown paths return 404", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText("wandered off");
 });
 
-test("/now streams the GitHub section", async ({ page }) => {
+test("/now shows focus, projects and latest writing", async ({ page }) => {
   await page.goto("/now");
-  await expect(page.getByText("Live from GitHub")).toBeVisible();
+  await expect(page.getByText("Live from GitHub")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Projects in motion" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Latest thinking" })).toBeVisible();
+  await expect(page.getByText(/TODO/)).toHaveCount(0);
 });
 
 test("theme toggle switches and persists", async ({ page }) => {

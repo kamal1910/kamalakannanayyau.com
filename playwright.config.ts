@@ -2,8 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 
 const PORT = 3100;
 
-// Runs against the production build so pre-rendered pages and streamed SSR
-// are tested exactly as they ship. Run `npm run build` first.
+// Runs against the production build so pre-rendered pages are tested
+// exactly as they ship. Run `npm run build` first.
 export default defineConfig({
   testDir: "e2e",
   fullyParallel: true,

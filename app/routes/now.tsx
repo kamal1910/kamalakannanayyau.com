@@ -1,11 +1,11 @@
-import { Suspense } from "react";
-import { Await } from "react-router";
+import { Link } from "react-router";
 import type { Route } from "./+types/now";
 import { PageHeader, SectionTitle } from "~/components/page-header";
-import { now, profile } from "~/content/site";
-import { getGitHubActivity, type Activity } from "~/lib/github.server";
-import { seo } from "~/lib/seo";
+import { LINKEDIN_ACTIVITY_URL, linkedInPosts } from "~/content/linkedin";
+import { posts } from "~/content/posts";
+import { now, profile, projects } from "~/content/site";
 import { formatDate } from "~/lib/format";
+import { seo } from "~/lib/seo";
 
 export function meta({}: Route.MetaArgs) {
   return seo({
@@ -15,25 +15,19 @@ export function meta({}: Route.MetaArgs) {
   });
 }
 
-// This route is excluded from pre-rendering (see react-router.config.ts).
-// The static content renders immediately; the GitHub promise is returned
-// un-awaited so React streams it in when it resolves.
-export function loader() {
-  return {
-    activity: getGitHubActivity(profile.githubUsername),
-  };
-}
+const linkClass = "text-accent-700 hover:underline dark:text-accent-400";
 
-export function headers() {
-  return { "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600" };
-}
+export default function Now() {
+  // Everything except this site itself, which isn't news.
+  const activeProjects = projects.filter((project) => project.status !== "Live");
+  const latestArticles = posts.slice(0, 2);
+  const latestLinkedIn = linkedInPosts[0];
 
-export default function Now({ loaderData }: Route.ComponentProps) {
   return (
     <div className="space-y-16">
       <PageHeader eyebrow="Now" title="What I'm focused on">
         <p>
-          A snapshot of my current priorities, inspired by{" "}
+          A snapshot of what has my attention right now, inspired by{" "}
           <a
             href="https://nownownow.com/about"
             className="underline underline-offset-4"
@@ -42,9 +36,18 @@ export default function Now({ loaderData }: Route.ComponentProps) {
           >
             the /now movement
           </a>
-          . Updated <time dateTime={now.updated}>{formatDate(now.updated)}</time>.
+          .
         </p>
       </PageHeader>
+
+      <section className="rounded-3xl border border-accent-500/30 bg-accent-50 p-8 sm:p-10 dark:border-accent-400/20 dark:bg-accent-400/5">
+        <p className="text-sm text-stone-500">
+          Updated <time dateTime={now.updated}>{formatDate(now.updated)}</time>
+        </p>
+        <p className="mt-3 max-w-3xl font-serif text-2xl leading-snug text-stone-900 sm:text-3xl dark:text-stone-50">
+          {now.focus}
+        </p>
+      </section>
 
       <div className="grid gap-6 md:grid-cols-3">
         {now.sections.map((section) => (
@@ -52,7 +55,10 @@ export default function Now({ loaderData }: Route.ComponentProps) {
             key={section.title}
             className="rounded-2xl border border-stone-200 bg-white p-6 dark:border-stone-800 dark:bg-stone-900"
           >
-            <h2 className="font-serif text-2xl text-stone-900 dark:text-stone-50">
+            <h2 className="flex items-center gap-2 font-serif text-2xl text-stone-900 dark:text-stone-50">
+              <span aria-hidden="true" className="text-xl">
+                {section.emoji}
+              </span>
               {section.title}
             </h2>
             <ul className="mt-4 space-y-3">
@@ -70,60 +76,78 @@ export default function Now({ loaderData }: Route.ComponentProps) {
         ))}
       </div>
 
-      <section aria-labelledby="activity-title" className="max-w-2xl">
-        <div id="activity-title">
-          <SectionTitle>Live from GitHub</SectionTitle>
-        </div>
-        <Suspense fallback={<ActivitySkeleton />}>
-          <Await resolve={loaderData.activity} errorElement={<ActivityEmpty />}>
-            {(activity) =>
-              activity.length > 0 ? <ActivityList activity={activity} /> : <ActivityEmpty />
-            }
-          </Await>
-        </Suspense>
-      </section>
+      <div className="grid gap-10 md:grid-cols-2">
+        {activeProjects.length > 0 && (
+          <section className="space-y-5">
+            <div className="flex items-baseline justify-between gap-4">
+              <SectionTitle>Projects in motion</SectionTitle>
+              <Link to="/projects" prefetch="intent" className={`text-sm ${linkClass}`}>
+                All projects →
+              </Link>
+            </div>
+            <ul className="divide-y divide-stone-200 dark:divide-stone-800">
+              {activeProjects.map((project) => (
+                <li key={project.name} className="flex items-center justify-between gap-4 py-3">
+                  <span className="font-medium text-stone-900 dark:text-stone-50">
+                    {project.name}
+                  </span>
+                  {project.status && (
+                    <span className="shrink-0 rounded-full border border-accent-500/40 px-2.5 py-0.5 text-xs font-medium text-accent-700 dark:text-accent-400">
+                      {project.status}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section className="space-y-5">
+          <div className="flex items-baseline justify-between gap-4">
+            <SectionTitle>Latest thinking</SectionTitle>
+            <Link to="/writing" prefetch="intent" className={`text-sm ${linkClass}`}>
+              All writing →
+            </Link>
+          </div>
+          <ul className="divide-y divide-stone-200 dark:divide-stone-800">
+            {latestArticles.map((post) => (
+              <li key={post.slug} className="py-3">
+                <Link to={`/writing/${post.slug}`} prefetch="intent" className="group block">
+                  <span className="font-medium text-stone-900 group-hover:text-accent-700 dark:text-stone-50 dark:group-hover:text-accent-400">
+                    {post.title}
+                  </span>
+                  <span className="mt-0.5 block text-sm text-stone-500">
+                    Article · {formatDate(post.date)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+            {latestLinkedIn && (
+              <li className="py-3">
+                <a
+                  href={latestLinkedIn.url ?? LINKEDIN_ACTIVITY_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group block"
+                >
+                  <span className="font-medium text-stone-900 group-hover:text-accent-700 dark:text-stone-50 dark:group-hover:text-accent-400">
+                    {latestLinkedIn.title}
+                  </span>
+                  <span className="mt-0.5 block text-sm text-stone-500">LinkedIn post ↗</span>
+                </a>
+              </li>
+            )}
+          </ul>
+        </section>
+      </div>
+
+      <p className="text-lg text-stone-600 dark:text-stone-400">
+        Working on something similar, or want to compare notes?{" "}
+        <Link to="/contact" prefetch="intent" className={linkClass}>
+          Let's talk
+        </Link>
+        .
+      </p>
     </div>
   );
-}
-
-function ActivityList({ activity }: { activity: Activity[] }) {
-  return (
-    <ul className="mt-5 space-y-3">
-      {activity.map((item) => (
-        <li
-          key={item.id}
-          className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
-        >
-          <span>
-            {item.action}{" "}
-            <a
-              href={`https://github.com/${item.repo}`}
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium text-accent-700 hover:underline dark:text-accent-400"
-            >
-              {item.repo}
-            </a>
-          </span>
-          <time dateTime={item.createdAt} className="shrink-0 text-sm text-stone-500">
-            {formatDate(item.createdAt.slice(0, 10))}
-          </time>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function ActivitySkeleton() {
-  return (
-    <ul className="mt-5 space-y-3" aria-busy="true" aria-label="Loading GitHub activity">
-      {[0, 1, 2].map((i) => (
-        <li key={i} className="h-6 animate-pulse rounded bg-stone-200 dark:bg-stone-800" />
-      ))}
-    </ul>
-  );
-}
-
-function ActivityEmpty() {
-  return <p className="mt-5 text-stone-500">No recent public activity to show.</p>;
 }
