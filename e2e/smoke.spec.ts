@@ -13,6 +13,10 @@ const pages = [
   },
   { path: "/writing/isr-isnt-dead", heading: "ISR Isn't Dead" },
   { path: "/writing/ai-certifications-2026", heading: "AI Certifications in 2026" },
+  {
+    path: "/writing/your-starting-point-does-not-define-your-destination",
+    heading: "Your Starting Point Does Not Define Your Destination",
+  },
   { path: "/contact", heading: "Let's talk" },
 ];
 
@@ -43,6 +47,7 @@ test("writing lists posts newest first and links to DEV", async ({ page }) => {
     .getByRole("heading", { level: 2 })
     .allTextContents();
   expect(titles).toEqual([
+    "Your Starting Point Does Not Define Your Destination",
     "AI Certifications in 2026: Which Ones Are Worth It",
     "ISR Isn't Dead, It Just Moved Into The Components",
     "Securing Agent-to-Agent Delegation in .NET: A Practical Design",
@@ -73,17 +78,6 @@ test("unknown paths return 404", async ({ page }) => {
   const response = await page.goto("/definitely-not-a-page");
   expect(response?.status()).toBe(404);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("wandered off");
-});
-
-test("about tells the journey story", async ({ page }) => {
-  await page.goto("/about");
-  await page.getByRole("link", { name: /read my journey/ }).click();
-  const journey = page.locator("#journey");
-  await expect(journey.getByRole("heading", { level: 3 })).toHaveCount(5);
-  await expect(journey).toContainText("R. Kombai");
-  await expect(
-    page.getByText("Your starting point does not define your destination."),
-  ).toBeVisible();
 });
 
 test("/now shows focus, projects and latest writing", async ({ page }) => {

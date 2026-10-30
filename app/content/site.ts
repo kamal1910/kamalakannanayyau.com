@@ -91,8 +91,6 @@ export const profile = profileSchema.parse({
       degree: "Engineer's Degree, Computer Science",
       school: "Madurai Kamaraj University",
     },
-    // TODO: add the institute name as `school` if you'd like it shown.
-    { degree: "Diploma in Computer Technology" },
   ],
   socials: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/kamalakannan-ayyau-a5689736/" },

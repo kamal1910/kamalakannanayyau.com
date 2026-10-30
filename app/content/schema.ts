@@ -18,29 +18,8 @@ export const profileSchema = z.object({
   strengths: z.array(z.object({ title: z.string().min(1), description: z.string().min(1) })),
   email: z.email(),
   skills: z.array(z.object({ group: z.string().min(1), items: z.array(z.string()).min(1) })),
-  education: z.array(z.object({ degree: z.string().min(1), school: z.string().min(1).optional() })),
+  education: z.array(z.object({ degree: z.string().min(1), school: z.string().min(1) })),
   socials: z.array(linkSchema),
-});
-
-export const journeySchema = z.object({
-  title: z.string().min(1),
-  chapters: z
-    .array(
-      z.object({
-        // Short marker shown on the timeline, e.g. a place or a year.
-        label: z.string().min(1),
-        title: z.string().min(1),
-        paragraphs: z.array(z.string().min(1)).min(1),
-        list: z.array(z.string().min(1)).default([]),
-      }),
-    )
-    .min(1),
-  lessons: z.array(z.object({ title: z.string().min(1), description: z.string().min(1) })),
-  message: z.object({
-    title: z.string().min(1),
-    paragraphs: z.array(z.string().min(1)).min(1),
-    mottos: z.array(z.string().min(1)),
-  }),
 });
 
 export const interestSchema = z.object({
