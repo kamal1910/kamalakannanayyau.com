@@ -9,13 +9,17 @@ export const profileSchema = z.object({
   name: z.string().min(1),
   shortName: z.string().min(1),
   role: z.string().min(1),
-  location: z.string().min(1),
+  // Short label shown next to the role, e.g. "20+ years".
+  experience: z.string().min(1),
+  location: z.string().min(1).optional(),
   tagline: z.string().min(1),
   intro: z.string().min(1),
   bio: z.array(z.string().min(1)).min(1),
+  strengths: z.array(z.object({ title: z.string().min(1), description: z.string().min(1) })),
   email: z.email(),
   githubUsername: z.string(),
   skills: z.array(z.object({ group: z.string().min(1), items: z.array(z.string()).min(1) })),
+  education: z.array(z.object({ degree: z.string().min(1), school: z.string().min(1) })),
   socials: z.array(linkSchema),
 });
 

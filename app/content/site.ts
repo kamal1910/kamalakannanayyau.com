@@ -13,66 +13,121 @@ export const SITE_URL = "https://kamalakannanayyau.com";
 export const profile = profileSchema.parse({
   name: "Kamalakannan Ayyau",
   shortName: "Kamal",
-  // TODO: your current title / company
-  role: "Software Engineer",
-  // TODO: your city
-  location: "Earth",
-  tagline: "I build software that is fast, reliable and pleasant to use.",
-  // TODO: one or two sentences shown on the home page
+  role: "Technical Architect & Engineering Manager",
+  experience: "20+ years",
+  // TODO: add your city to show it on the About page, e.g. location: "Chennai, India"
+  tagline: "I turn business vision into production-ready software.",
   intro:
-    "I'm a software engineer who enjoys designing systems end to end — from cloud infrastructure and APIs to the interfaces people actually touch.",
-  // TODO: your story, one paragraph per entry
+    "Technical Architect and Engineering Manager with over 20 years of experience. Today I work at the intersection of Agentic AI and Intelligent Automation — and I still love to code.",
   bio: [
-    "I've spent my career building backend services, web applications and the cloud platforms they run on. I like problems that sit between architecture and product: making something both well-engineered and genuinely useful.",
-    "Lately I've been focused on distributed systems, developer tooling and applying AI to real workflows.",
-    "Outside work I'm usually learning something new, writing about what I've learned, or tinkering with side projects.",
+    "I am a Technical Architect and Engineering Manager with over 20 years of experience building software that solves real business problems. While my roots are in deep full-stack development, my current focus is at the intersection of Agentic AI and Intelligent Automation.",
+    "Throughout my career, I have had the privilege of architecting scalable, cloud-native systems across diverse industries like Fintech, Real Estate, and E-commerce. I believe that great architecture isn't just about the tech stack, it is about bridging the gap between a business vision and a production-ready reality.",
+    "Currently, I spend most of my time designing agentic workflows — moving beyond simple chatbots to build autonomous AI agents and LAMs that handle complex enterprise tasks and modernize legacy RPA processes. I am a firm believer in staying hands-on and still love to code, whether it's a Python or .NET-based AI backend or a high-performance frontend using React and Next.js.",
+  ],
+  strengths: [
+    {
+      title: "AI & Automation",
+      description:
+        "Designing autonomous agents, LLM/LAM integrations, and intelligent RPA that drive tangible business efficiency.",
+    },
+    {
+      title: "Next-Gen Frontends",
+      description:
+        "Specialized in Next.js 16 and React 19, utilizing SSG, ISR, and Partial Prerendering (PPR) to deliver sub-second page performance and optimized Core Web Vitals for AI-heavy interfaces.",
+    },
+    {
+      title: "Modern Full-Stack",
+      description:
+        "Deep expertise across Python, .NET/C#, and the JavaScript/TypeScript ecosystem.",
+    },
+    {
+      title: "Scalable Architecture",
+      description:
+        "A “day-one” focus on performance — from cloud-native microservices on AWS/Azure to event-driven architectures.",
+    },
+    {
+      title: "Leadership",
+      description:
+        "Experience leading cross-functional teams through the full SDLC, ensuring we build for the future while delivering today.",
+    },
   ],
   // TODO: the address you want public (avoid your personal inbox)
   email: "hello@kamalakannanayyau.com",
-  // TODO: your GitHub username — powers the live activity feed on /now
-  githubUsername: "",
-  // TODO: adjust to your real stack
+  // Powers the live activity feed on /now.
+  githubUsername: "kamal1910",
   skills: [
-    { group: "Backend", items: ["C# / .NET", "ASP.NET Core", "Node.js", "PostgreSQL"] },
-    { group: "Frontend", items: ["React", "TypeScript", "React Router", "Tailwind CSS"] },
-    { group: "Cloud", items: ["Azure", "Kubernetes (AKS)", "Docker", "Dapr", "CI/CD"] },
     {
-      group: "Practices",
-      items: ["System design", "Clean architecture", "Testing", "Observability"],
+      group: "AI & Intelligent Automation",
+      items: ["AI Agents", "LLM Integration", "RPA Tools", "Workflow Automation"],
+    },
+    {
+      group: "Architecture & Leadership",
+      items: [
+        "Solution Architecture",
+        "System Design",
+        "Microservices",
+        "CI/CD",
+        "DevOps",
+        "Agile/Scrum",
+      ],
+    },
+    {
+      group: "Full-Stack Development",
+      items: ["JavaScript", "Node.js", "React.js", "TypeScript", "Python", "C#", ".NET"],
+    },
+    {
+      group: "Databases & APIs",
+      items: ["SQL Server", "PostgreSQL", "REST", "GraphQL", "NoSQL"],
+    },
+    {
+      group: "Cloud & Infrastructure",
+      items: ["AWS", "Azure", "Jenkins", "CircleCI", "Docker", "Kubernetes"],
+    },
+    {
+      group: "Performance & Optimization",
+      items: ["SEO", "Core Web Vitals", "Scalable Frontend/Backend Systems"],
     },
   ],
-  // TODO: replace with your real profile URLs
+  education: [
+    {
+      degree: "Engineer's Degree, Computer Science",
+      school: "Madurai Kamaraj University",
+    },
+  ],
   socials: [
-    { label: "GitHub", href: "https://github.com/" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/kamalakannan-ayyau-a5689736/" },
+    { label: "GitHub", href: "https://github.com/kamal1910" },
+    { label: "DEV", href: "https://dev.to/kamal1910" },
   ],
 });
 
-// TODO: what you care about, inside and outside tech
+// TODO: add your personal interests below the tech ones
 export const interests = z.array(interestSchema).parse([
   {
-    title: "Distributed systems",
-    emoji: "🕸️",
-    description:
-      "How services talk, fail and recover — workflows, messaging and resilient architecture.",
-    kind: "tech",
-  },
-  {
-    title: "AI in real products",
+    title: "Agentic AI",
     emoji: "🤖",
-    description: "Using LLMs and agents for practical workflows, not demos.",
+    description:
+      "Moving beyond simple chatbots to autonomous AI agents and LAMs that handle complex enterprise tasks.",
     kind: "tech",
   },
   {
-    title: "Developer experience",
-    emoji: "🛠️",
-    description: "Tools, automation and conventions that make teams faster.",
+    title: "Intelligent automation",
+    emoji: "⚙️",
+    description: "Modernizing legacy RPA processes with intelligent, AI-driven workflows.",
+    kind: "tech",
+  },
+  {
+    title: "Solution architecture",
+    emoji: "🏗️",
+    description:
+      "Scalable, cloud-native and event-driven systems that bridge business vision and production reality.",
     kind: "tech",
   },
   {
     title: "Web performance",
     emoji: "⚡",
-    description: "Server rendering, streaming and shipping less JavaScript.",
+    description:
+      "SSG, ISR and Partial Prerendering for sub-second pages and strong Core Web Vitals.",
     kind: "tech",
   },
   {
@@ -91,13 +146,14 @@ export const interests = z.array(interestSchema).parse([
 
 // TODO: update this whenever your focus changes
 export const now = nowSchema.parse({
-  updated: "2026-10-25",
+  updated: "2026-10-29",
   sections: [
     {
       title: "Building",
       items: [
+        "Agentic workflows: autonomous AI agents and LAMs for complex enterprise tasks.",
+        "An open-source C# library for secure agent-to-agent delegation.",
         "This website — React 19.3 + React Router 8 with pre-rendering and streamed SSR.",
-        "TODO: your current main project.",
       ],
     },
     {

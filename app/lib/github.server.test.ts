@@ -23,6 +23,17 @@ describe("toActivity", () => {
     expect(toActivity({ message: "API rate limit exceeded" })).toEqual([]);
   });
 
+  it("orders events newest first", () => {
+    const older = { ...pushEvent, id: "old", created_at: "2026-10-19T10:00:00Z" };
+    const newer = {
+      ...pushEvent,
+      id: "new",
+      type: "WatchEvent",
+      created_at: "2026-10-21T10:00:00Z",
+    };
+    expect(toActivity([older, pushEvent, newer]).map((a) => a.id)).toEqual(["new", "1", "old"]);
+  });
+
   it("respects the limit", () => {
     const events = Array.from({ length: 10 }, (_, i) => ({ ...pushEvent, id: String(i) }));
     expect(toActivity(events, 3)).toHaveLength(3);

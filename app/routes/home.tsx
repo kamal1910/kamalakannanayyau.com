@@ -23,7 +23,7 @@ export default function Home() {
         <div className="max-w-3xl">
           <p className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-1 text-sm text-stone-600 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400">
             <span className="size-2 rounded-full bg-accent-500" aria-hidden="true" />
-            {profile.role} · {profile.location}
+            {profile.role} · {profile.experience}
           </p>
           <h1 className="mt-6 font-serif text-6xl leading-[1.05] tracking-tight text-stone-900 sm:text-7xl dark:text-stone-50">
             Hi, I'm {profile.shortName}.
