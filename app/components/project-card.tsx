@@ -5,6 +5,11 @@ export function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article className="group relative flex h-full flex-col rounded-2xl border border-stone-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-accent-500/60 hover:shadow-lg hover:shadow-stone-900/5 dark:border-stone-800 dark:bg-stone-900 dark:hover:border-accent-400/50">
+      {project.status && (
+        <p className="mb-3 self-start rounded-full border border-accent-500/40 px-2.5 py-0.5 text-xs font-medium text-accent-700 dark:text-accent-400">
+          {project.status}
+        </p>
+      )}
       <h3 className="text-lg font-semibold tracking-tight text-stone-900 dark:text-stone-50">
         {href ? (
           <a href={href} target="_blank" rel="noreferrer" className="after:absolute after:inset-0">

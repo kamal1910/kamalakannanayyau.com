@@ -8,7 +8,7 @@ export function meta({}: Route.MetaArgs) {
   return seo({
     title: "Projects",
     path: "/projects",
-    description: `Things ${profile.shortName} has built.`,
+    description: `Ideas ${profile.shortName} is exploring and building: AI agents, automation, search and quantum experiments.`,
   });
 }
 
@@ -16,7 +16,19 @@ export default function Projects() {
   return (
     <div className="space-y-14">
       <PageHeader eyebrow="Projects" title="Things I've built">
-        <p>A selection of work and side projects. More on GitHub.</p>
+        <p>
+          Ideas I'm exploring and building, mostly where AI agents, automation and search meet real
+          business problems. Most are private while they take shape; more on{" "}
+          <a
+            href={`https://github.com/${profile.githubUsername}`}
+            target="_blank"
+            rel="noreferrer"
+            className="underline underline-offset-4"
+          >
+            GitHub
+          </a>
+          .
+        </p>
       </PageHeader>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (

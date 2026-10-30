@@ -233,25 +233,45 @@ export const now = nowSchema.parse({
   ],
 });
 
-// TODO: 3–6 projects you're proud of
+// High-level summaries only: most of these repos are private, so no source links.
 export const projects = z.array(projectSchema).parse([
   {
+    name: "AI Trading Agent",
+    status: "Experiment",
+    description:
+      "Describe a trade in plain English and an LLM agent checks live account and market data, explains its reasoning and proposes an order. Code-enforced guardrails and human approval decide what gets sent. Runs on paper trading with a local model or Claude.",
+    tags: ["Python", "AI Agents", "LLM", "Alpaca"],
+    featured: true,
+  },
+  {
+    name: "NestQuest Property Search",
+    status: "In progress",
+    description:
+      "Fast, AI-enabled, multi-industry search platform, starting with real estate (MLS): natural-language queries, hybrid keyword and vector search, map-area and commute-time filters. Adding a new industry is mostly configuration.",
+    tags: ["TypeScript", "OpenSearch", "PostGIS", "Next.js"],
+    featured: true,
+  },
+  {
+    name: "Q-AVM",
+    status: "Experiment",
+    description:
+      "A quantum-ready automated valuation model for real estate. A hybrid quantum-classical model values properties, and every quantum estimate is shown next to a classical baseline so the comparison stays honest.",
+    tags: ["Python", "Quantum ML", "FastAPI", "PostGIS"],
+    featured: true,
+  },
+  {
+    name: "Quantum Talent Match",
+    status: "MVP",
+    description:
+      "Recruitment matching engine: a local LLM parses resumes, candidates are ranked with an explainable fit score and assigned across roles by an exact optimizer, benchmarked against an experimental quantum (QAOA) solver. No candidate data leaves the machine.",
+    tags: ["Python", "Local LLM", "pgvector", "Qiskit"],
+  },
+  {
     name: "kamalakannanayyau.com",
+    status: "Live",
     description:
       "This site. Pre-rendered pages, a streamed SSR /now page, MDX writing, all type-safe.",
     tags: ["React", "React Router", "TypeScript", "Tailwind"],
-    featured: true,
-  },
-  {
-    name: "TODO: Project two",
-    description: "TODO: one line about what it does and why it matters.",
-    tags: [".NET", "Azure"],
-    featured: true,
-  },
-  {
-    name: "TODO: Project three",
-    description: "TODO: one line about what it does and why it matters.",
-    tags: ["Kubernetes", "Dapr"],
-    featured: true,
+    repo: "https://github.com/kamal1910/kamalakannanayyau.com",
   },
 ]);

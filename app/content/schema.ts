@@ -43,6 +43,8 @@ export const nowSchema = z.object({
 
 export const projectSchema = z.object({
   name: z.string().min(1),
+  // Short stage label shown on the card, e.g. "Experiment", "MVP", "Live".
+  status: z.string().min(1).optional(),
   description: z.string().min(1),
   tags: z.array(z.string()),
   repo: z.url().optional(),
