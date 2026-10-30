@@ -75,6 +75,17 @@ test("unknown paths return 404", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toContainText("wandered off");
 });
 
+test("about tells the journey story", async ({ page }) => {
+  await page.goto("/about");
+  await page.getByRole("link", { name: /read my journey/ }).click();
+  const journey = page.locator("#journey");
+  await expect(journey.getByRole("heading", { level: 3 })).toHaveCount(5);
+  await expect(journey).toContainText("R. Kombai");
+  await expect(
+    page.getByText("Your starting point does not define your destination."),
+  ).toBeVisible();
+});
+
 test("/now shows focus, projects and latest writing", async ({ page }) => {
   await page.goto("/now");
   await expect(page.getByText("Live from GitHub")).toHaveCount(0);
