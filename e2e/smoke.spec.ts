@@ -38,12 +38,22 @@ test("avatar loads on the home page", async ({ page }) => {
 
 test("writing lists posts newest first and links to DEV", async ({ page }) => {
   await page.goto("/writing");
-  const titles = await page.getByRole("heading", { level: 2 }).allTextContents();
+  const titles = await page
+    .getByRole("list", { name: "Articles" })
+    .getByRole("heading", { level: 2 })
+    .allTextContents();
   expect(titles).toEqual([
     "AI Certifications in 2026: Which Ones Are Worth It",
     "ISR Isn't Dead, It Just Moved Into The Components",
     "Securing Agent-to-Agent Delegation in .NET: A Practical Design",
   ]);
+
+  const linkedIn = page.getByRole("region", { name: "From LinkedIn" });
+  await expect(linkedIn.getByRole("heading", { level: 3 })).toHaveCount(4);
+  await expect(linkedIn.getByRole("link").first()).toHaveAttribute(
+    "href",
+    /^https:\/\/www\.linkedin\.com\//,
+  );
 
   await page.goto("/writing/isr-isnt-dead");
   await expect(page.getByRole("link", { name: /Read on DEV/ }).first()).toHaveAttribute(

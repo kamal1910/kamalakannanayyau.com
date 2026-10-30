@@ -63,6 +63,14 @@ export const postFrontmatterSchema = z.object({
   devToUrl: z.url().optional(),
 });
 
+export const linkedInPostSchema = z.object({
+  title: z.string().min(1),
+  excerpt: z.string().min(1),
+  tags: z.array(z.string().min(1)).default([]),
+  url: z.url().optional(),
+  date: z.iso.date().optional(),
+});
+
 export type Profile = z.infer<typeof profileSchema>;
 export type Interest = z.infer<typeof interestSchema>;
 export type Now = z.infer<typeof nowSchema>;
